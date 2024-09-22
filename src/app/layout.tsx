@@ -2,26 +2,38 @@ import Footer from "@/app/_components/footer";
 import { CMS_NAME, HOME_OG_IMAGE_URL } from "@/lib/constants";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import cn from "classnames";
 import "./globals.css";
+import { Nunito } from 'next/font/google';
+import { getServerSession } from "next-auth";
+
+import SessionProvider from "@/app/_components/session-provider";
+import NavMenu from "@/app/_components/nav-menu";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: `Next.js Blog Example with ${CMS_NAME}`,
-  description: `A statically generated blog example using Next.js and ${CMS_NAME}.`,
+  title: `Nodrac's`,
+  description: `Cardon family recipe blog`,
   openGraph: {
     images: [HOME_OG_IMAGE_URL],
   },
 };
 
-export default function RootLayout({
+const nunito = Nunito({
+  subsets: ['latin'],
+  display: 'swap',
+})
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const session = await getServerSession();
+
   return (
-    <html lang="en">
+    <html lang="en" className={nunito.className}>
       <head>
         <link
           rel="apple-touch-icon"
@@ -56,10 +68,13 @@ export default function RootLayout({
         <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       </head>
       <body
-        className={cn(inter.className, "dark:bg-slate-900 dark:text-slate-400")}
+        className='dark:bg-slate-900 dark:text-slate-400'
       >
+        <SessionProvider session={session}>
+        <NavMenu />
         <div className="min-h-screen">{children}</div>
         <Footer />
+        </SessionProvider>
       </body>
     </html>
   );
