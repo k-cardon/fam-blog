@@ -1,3 +1,13 @@
+export async function GET() {
+  return new Response(JSON.stringify({ message: 'Hello, World!' }), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
+
 // import { NextResponse } from 'next/server';
 // import multer from 'multer';
 // import multerS3 from 'multer-s3';
