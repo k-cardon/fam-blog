@@ -5,7 +5,7 @@ import { DefaultSession, NextAuthOptions } from "next-auth";
 // Parse the authorized emails from the environment variable
 const authorizedUsers = process.env.AUTHORIZED_EMAILS?.split(',') || [];
 
-const authOptions: NextAuthOptions = {
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -30,8 +30,8 @@ const authOptions: NextAuthOptions = {
   },
 };
 
-const handler = NextAuth(authOptions);
+export const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST, authOptions };
+export { handler as GET, handler as POST };
 
 
