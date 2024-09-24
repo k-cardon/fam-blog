@@ -26,8 +26,11 @@ const upload = multer({
 
 // Define the API route
 export async function POST(req: Request) {
+  // Convert request to a FormData object
+  const formData = await req.formData();
+  const file = formData.get('image');
+
   return new Promise((resolve, reject) => {
-    // Create a new multipart form request
     upload.single('image')(
       req as any,
       {} as any,
@@ -37,16 +40,13 @@ export async function POST(req: Request) {
           return resolve(NextResponse.json({ error: 'Failed to upload image' }, { status: 500 }));
         }
 
-        // Access the uploaded file information
-        const file = (req as any).file;
-
         // Check if file is present
         if (!file) {
           return resolve(NextResponse.json({ error: 'File not found' }, { status: 400 }));
         }
 
         // Return the file URL
-        return resolve(NextResponse.json({ url: file.location }, { status: 200 }));
+        return resolve(NextResponse.json({ url: (file as any).location }, { status: 200 }));
       }
     );
   });
