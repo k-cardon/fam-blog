@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { DefaultSession, NextAuthOptions } from "next-auth";
+import { DefaultSession, NextAuthOptions, User } from "next-auth";
 
 // Parse the authorized emails from the environment variable
 const authorizedUsers = process.env.AUTHORIZED_EMAILS?.split(',') || [];
@@ -20,8 +20,7 @@ const authOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user }) {
-      // Check if user is defined and has an email
+    async signIn({ user }: { user: User | null }) {      // Check if user is defined and has an email
       if (user?.email && authorizedUsers.includes(user.email)) {
         return true; // Allow sign-in
       }
