@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { uploadImage } from '../actions/uploadImage'; 
 
 const CreateRecipe = () => {
   const [title, setTitle] = useState<string>('');
@@ -10,6 +11,9 @@ const CreateRecipe = () => {
   const [author, setAuthor] = useState<string>('');
   const [link, setLink] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
 
   const generateSlug = (title: string) => {
     return title
@@ -33,61 +37,63 @@ const CreateRecipe = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    let uploadedImageURL = '';
-
-    // Upload image if it exists
-    if (imageFile) {
-      const formData = new FormData();
-      formData.append('image', imageFile);
-
-      const uploadRes = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (uploadRes.ok) {
-        const uploadData = await uploadRes.json();
-        uploadedImageURL = uploadData.url;
-      } else {
-        console.error('Image upload failed:', uploadRes.statusText);
-        return; 
+    setIsUploading(true);
+    setError(null);
+  
+    try {
+      let uploadedImageURL = '';
+  
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append('file', imageFile);
+  
+        try {
+          const result = await uploadImage(formData);
+          uploadedImageURL = result.url;
+        } catch (uploadError) {
+          throw new Error('Image upload failed. Please try again.');
+        }
       }
-    }
-
-    const recipeData = {
-      title,
-      slug,
-      ingredients,
-      instructions,
-      author,
-      link,
-      imageURL: uploadedImageURL,
-    };
-
-    const res = await fetch('/api/create-recipe', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(recipeData),
-    });
-
-    if (res.ok) {
+  
+      const recipeData = {
+        title,
+        slug,
+        ingredients,
+        instructions,
+        author,
+        link,
+        imageURL: uploadedImageURL,
+      };
+  
+      const res = await fetch('/api/create-recipe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipeData),
+      });
+  
+      if (!res.ok) {
+        throw new Error('Failed to create recipe. Please try again.');
+      }
+  
       const newRecipe = await res.json();
       console.log('Recipe created:', newRecipe);
-      // Reset form fields
       setTitle('');
       setSlug('');
       setIngredients('');
       setInstructions('');
       setAuthor('');
       setLink('');
-      setImageFile(null); 
-    } else {
-      console.error('Failed to create recipe:', res.statusText);
+      setImageFile(null);
+    } catch (error) {
+      console.error('Error:', error);
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+    } finally {
+      setIsUploading(false);
     }
   };
+  
 
   return (
     <div className="max-w-lg mx-auto p-6 border border-gray-300 rounded-lg bg-gray-50">
@@ -160,11 +166,17 @@ const CreateRecipe = () => {
         </div>
         <button
           type="submit"
-          className="w-full p-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+          disabled={isUploading}
+          className="w-full p-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition disabled:bg-green-300"
         >
-          Create Recipe
+          {isUploading ? 'Creating Recipe...' : 'Create Recipe'}
         </button>
       </form>
+      {error && (
+      <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        {error}
+      </div>
+    )}
     </div>
   );
 };
