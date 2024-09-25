@@ -101,7 +101,7 @@ const CreateRecipe = () => {
         instructions,
         author,
         link,
-        imageURL: uploadedImageURL,
+        image: uploadedImageURL,
         tags: selectedTags,
       };
 
