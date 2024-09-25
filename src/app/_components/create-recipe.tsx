@@ -6,8 +6,9 @@ import { uploadImage } from '../actions/uploadImage';
 const CreateRecipe = () => {
   const [title, setTitle] = useState<string>('');
   const [slug, setSlug] = useState<string>('');
-  const [ingredients, setIngredients] = useState<string>('');
+  const [ingredients, setIngredients] = useState<Array<{ amount: string; name: string }>>([{ amount: '', name: '' }]);
   const [instructions, setInstructions] = useState<string>('');
+  const [notes, setNotes] = useState<string>('');
   const [author, setAuthor] = useState<string>('');
   const [link, setLink] = useState<string>('');
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -31,6 +32,22 @@ const CreateRecipe = () => {
     setSlug(generateSlug(newTitle)); 
   };
 
+  const handleIngredientChange = (index: number, field: 'amount' | 'name', value: string) => {
+    const newIngredients = [...ingredients];
+    newIngredients[index][field] = value;
+    setIngredients(newIngredients);
+  };
+  
+  const addIngredient = () => {
+    setIngredients([...ingredients, { amount: '', name: '' }]);
+  };
+  
+  const removeIngredient = (index: number) => {
+    const newIngredients = ingredients.filter((_, i) => i !== index);
+    setIngredients(newIngredients);
+  };
+  
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setImageFile(file);
@@ -41,7 +58,7 @@ const CreateRecipe = () => {
     setIsUploading(true);
     setError(null);
     setSuccessMessage(null);
-
+  
     try {
       let uploadedImageURL = '';
 
@@ -57,10 +74,15 @@ const CreateRecipe = () => {
         }
       }
 
+      const formattedIngredients = ingredients
+      .filter(ing => ing.amount.trim() !== '' || ing.name.trim() !== '')
+      .map(ing => `${ing.amount} ${ing.name}`.trim())
+      .join('\n');
+
       const recipeData = {
         title,
         slug,
-        ingredients,
+        ingredients: formattedIngredients.split('\n'), 
         instructions,
         author,
         link,
@@ -85,7 +107,7 @@ const CreateRecipe = () => {
       
       setTitle('');
       setSlug('');
-      setIngredients('');
+      setIngredients([]);
       setInstructions('');
       setAuthor('');
       setLink('');
@@ -122,13 +144,41 @@ const CreateRecipe = () => {
           />
         </div>
         <div className="mb-4">
-          <textarea
-            value={ingredients}
-            onChange={(e) => setIngredients(e.target.value)}
-            placeholder="Ingredients"
-            required
-            className="w-full h-24 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-300"
-          />
+          <label className="block mb-2 font-bold">Ingredients</label>
+          {ingredients.map((ingredient, index) => (
+            <div key={index} className="flex mb-2">
+              <input
+                type="text"
+                value={ingredient.amount}
+                onChange={(e) => handleIngredientChange(index, 'amount', e.target.value)}
+                placeholder="Amount"
+                className="w-1/3 p-2 mr-2 border border-gray-300 rounded-md"
+              />
+              <input
+                type="text"
+                value={ingredient.name}
+                onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
+                placeholder="Ingredient"
+                className="w-2/3 p-2 border border-gray-300 rounded-md"
+              />
+              {index > 0 && (
+                <button
+                  type="button"
+                  onClick={() => removeIngredient(index)}
+                  className="ml-2 px-2 py-1 bg-red-500 text-white rounded-md"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addIngredient}
+            className="mt-2 px-3 py-1 bg-blue-500 text-white rounded-md"
+          >
+            Add Ingredient
+          </button>
         </div>
         <div className="mb-4">
           <textarea
@@ -136,6 +186,14 @@ const CreateRecipe = () => {
             onChange={(e) => setInstructions(e.target.value)}
             placeholder="Instructions"
             required
+            className="w-full h-24 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-300"
+          />
+        </div>
+        <div className="mb-4">
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Notes (optional)"
             className="w-full h-24 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-300"
           />
         </div>
@@ -154,7 +212,7 @@ const CreateRecipe = () => {
             type="text"
             value={link}
             onChange={(e) => setLink(e.target.value)}
-            placeholder="Link"
+            placeholder="Link (optional)"
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-green-300"
           />
         </div>

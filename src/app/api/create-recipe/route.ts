@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; 
+import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   const { title, slug, ingredients, instructions, notes, author, link, imageURL } = await req.json();
@@ -14,12 +14,12 @@ export async function POST(req: Request) {
       data: {
         title,
         slug,
-        ingredients,
+        ingredients: Array.isArray(ingredients) ? ingredients : [ingredients], 
         instructions,
-        notes,
+        notes: notes || null,
         author,
-        link,
-        imageURL,
+        link: link || null,
+        imageURL: imageURL || null,
       },
     });
 

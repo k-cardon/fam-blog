@@ -17,7 +17,7 @@ model Recipe {
   id            Int     @id @default(autoincrement())
   title         String
   slug          String  @unique
-  ingredients   String
+  ingredients   String[]
   instructions  String
   notes         String?
   author        String

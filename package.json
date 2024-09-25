@@ -10,13 +10,12 @@
     "@aws-sdk/client-s3": "^3.654.0",
     "@aws-sdk/middleware-sdk-s3": "^3.654.0",
     "@aws-sdk/s3-request-presigner": "^3.658.0",
-    "@prisma/client": "^5.19.1",
+    "@prisma/client": "^5.20.0",
     "classnames": "^2.5.1",
     "date-fns": "^3.6.0",
     "gray-matter": "^4.0.3",
     "next": "latest",
     "next-auth": "^4.24.7",
-    "prisma": "^5.19.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remark": "^15.0.1",
@@ -30,6 +29,7 @@
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
+    "prisma": "^5.20.0",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.5.2"
   }

@@ -38,13 +38,13 @@ export default function NavMenu() {
             Home
           </li>
         </Link>
-        <Link href="/protected">
+        <Link href="/create">
           <li
             className={
-              pathname === "/protected" ? ACTIVE_ROUTE : INACTIVE_ROUTE
+              pathname === "/create" ? ACTIVE_ROUTE : INACTIVE_ROUTE
             }
           >
-            Protected Route
+            Add a recipe
           </li>
         </Link>      
       </ul>
