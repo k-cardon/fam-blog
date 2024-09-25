@@ -46,34 +46,7 @@ export default function NavMenu() {
           >
             Protected Route
           </li>
-        </Link>
-        <Link href="/serverAction">
-          <li
-            className={
-              pathname === "/serverAction" ? ACTIVE_ROUTE : INACTIVE_ROUTE
-            }
-          >
-            Server Action
-          </li>
-        </Link>
-        <Link href="/apiFromClient">
-          <li
-            className={
-              pathname === "/apiFromClient" ? ACTIVE_ROUTE : INACTIVE_ROUTE
-            }
-          >
-            API From Client
-          </li>
-        </Link>
-        <Link href="/apiFromServer">
-          <li
-            className={
-              pathname === "/apiFromServer" ? ACTIVE_ROUTE : INACTIVE_ROUTE
-            }
-          >
-            API From Server
-          </li>
-        </Link>
+        </Link>      
       </ul>
     </div>
   );

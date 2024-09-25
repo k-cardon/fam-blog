@@ -13,6 +13,7 @@ const CreateRecipe = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
 
   const generateSlug = (title: string) => {
@@ -39,14 +40,15 @@ const CreateRecipe = () => {
     e.preventDefault();
     setIsUploading(true);
     setError(null);
-  
+    setSuccessMessage(null);
+
     try {
       let uploadedImageURL = '';
-  
+
       if (imageFile) {
         const formData = new FormData();
         formData.append('file', imageFile);
-  
+
         try {
           const result = await uploadImage(formData);
           uploadedImageURL = result.url;
@@ -54,7 +56,7 @@ const CreateRecipe = () => {
           throw new Error('Image upload failed. Please try again.');
         }
       }
-  
+
       const recipeData = {
         title,
         slug,
@@ -64,7 +66,7 @@ const CreateRecipe = () => {
         link,
         imageURL: uploadedImageURL,
       };
-  
+
       const res = await fetch('/api/create-recipe', {
         method: 'POST',
         headers: {
@@ -72,13 +74,15 @@ const CreateRecipe = () => {
         },
         body: JSON.stringify(recipeData),
       });
-  
+
       if (!res.ok) {
         throw new Error('Failed to create recipe. Please try again.');
       }
-  
+
       const newRecipe = await res.json();
       console.log('Recipe created:', newRecipe);
+      setSuccessMessage('Recipe added. Success!');
+      
       setTitle('');
       setSlug('');
       setIngredients('');
@@ -93,7 +97,6 @@ const CreateRecipe = () => {
       setIsUploading(false);
     }
   };
-  
 
   return (
     <div className="max-w-lg mx-auto p-6 border border-gray-300 rounded-lg bg-gray-50">
@@ -156,11 +159,11 @@ const CreateRecipe = () => {
           />
         </div>
         <div className="mb-4">
+          Add an image (optional)
           <input
             type="file"
             onChange={handleImageChange}
             accept="image/*"
-            required
             className="w-full p-3 border border-gray-300 rounded-md focus:outline-none"
           />
         </div>
@@ -173,10 +176,15 @@ const CreateRecipe = () => {
         </button>
       </form>
       {error && (
-      <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-        {error}
-      </div>
-    )}
+        <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+      {successMessage && (
+        <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+          {successMessage}
+        </div>
+      )}
     </div>
   );
 };
