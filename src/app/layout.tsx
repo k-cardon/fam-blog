@@ -71,7 +71,7 @@ export default async function RootLayout({
       >
         <SessionProvider session={session}>
         <NavMenu />
-        <div className="min-h-screen">{children}</div>
+        <div className="min-h-screen m-14">{children}</div>
         </SessionProvider>
       </body>
     </html>

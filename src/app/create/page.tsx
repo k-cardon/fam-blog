@@ -9,7 +9,5 @@ export default async function ProtectedRoute() {
   }
 
   return (
-    <div className='m-12'>
       <CreateRecipe />
-    </div>
   )}

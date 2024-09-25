@@ -20,6 +20,7 @@ async function getAllRecipes(): Promise<RecipeType[]> {
   return res.json();
 }
 
+
 export default async function Recipe({ params }: Params) {
   const recipe = await getRecipeBySlug(params.slug);
 
