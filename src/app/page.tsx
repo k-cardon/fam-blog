@@ -5,6 +5,7 @@ import { MoreRecipes } from "@/app/_components/more-recipes";
 import { getServerSession } from "next-auth";
 import { Recipe } from "@/interfaces/recipe";
 import { getBaseUrl } from "@/lib/getBaseUrl";
+import { redirect } from "next/navigation";
 
 async function getAllRecipes(): Promise<Recipe[]> {
   const url = `${getBaseUrl()}/api/recipes`;
@@ -13,7 +14,10 @@ async function getAllRecipes(): Promise<Recipe[]> {
   try {
     const res = await fetch(url, { 
       cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', 
     });
     
     if (!res.ok) {
@@ -33,6 +37,12 @@ async function getAllRecipes(): Promise<Recipe[]> {
 
 export default async function Home() {
   const session = await getServerSession();
+
+  // Redirect if not authenticated
+  if (!session || !session.user) {
+    redirect("/api/auth/signin");
+  }
+
   let allRecipes: Recipe[] = [];
   let error: string | null = null;
 
@@ -48,30 +58,26 @@ export default async function Home() {
 
   return (
     <main>
-      {session?.user?.name ? (
-        <Container>
-          <Intro />
-          {error ? (
-            <div className="text-red-500">{error}</div>
-          ) : heroRecipe ? (
-            <>
-              <HeroRecipe
-                title={heroRecipe.title}
-                image={heroRecipe.image || '/assets/default.jpeg'}
-                date={heroRecipe.date}
-                author={heroRecipe.author}
-                slug={heroRecipe.slug}
-                excerpt={heroRecipe.instructions.substring(0, 200) + '...'}
-              />
-              {moreRecipes.length > 0 && <MoreRecipes recipes={moreRecipes} />}
-            </>
-          ) : (
-            <div>No recipes found.</div>
-          )}
-        </Container>
-      ) : (
-        <div>Not logged in</div>
-      )}
+      <Container>
+        <Intro />
+        {error ? (
+          <div className="text-red-500">{error}</div>
+        ) : heroRecipe ? (
+          <>
+            <HeroRecipe
+              title={heroRecipe.title}
+              image={heroRecipe.image || '/assets/default.jpeg'}
+              date={heroRecipe.date}
+              author={heroRecipe.author}
+              slug={heroRecipe.slug}
+              excerpt={heroRecipe.instructions.substring(0, 200) + '...'}
+            />
+            {moreRecipes.length > 0 && <MoreRecipes recipes={moreRecipes} />}
+          </>
+        ) : (
+          <div>No recipes found.</div>
+        )}
+      </Container>
     </main>
   );
 }

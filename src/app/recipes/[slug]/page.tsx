@@ -1,12 +1,12 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Container from "@/app/_components/container";
 import Header from "@/app/_components/header";
 import { PostBody } from "@/app/_components/post-body";
 import { PostHeader } from "@/app/_components/post-header";
 import { Recipe as RecipeType } from "@/interfaces/recipe";
 import { getBaseUrl } from '@/lib/getBaseUrl';
-
+import { getServerSession } from "next-auth";
 
 async function getRecipeBySlug(slug: string): Promise<RecipeType | null> {
   const res = await fetch(`${getBaseUrl()}/api/recipes?slug=${slug}`);
@@ -20,8 +20,12 @@ async function getAllRecipes(): Promise<RecipeType[]> {
   return res.json();
 }
 
-
 export default async function Recipe({ params }: Params) {
+  const session = await getServerSession();
+  if (!session || !session.user) {
+    redirect("/api/auth/signin");
+  }
+
   const recipe = await getRecipeBySlug(params.slug);
 
   if (!recipe) {
