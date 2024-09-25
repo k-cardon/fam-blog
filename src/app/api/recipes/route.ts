@@ -4,7 +4,7 @@ import { Recipe as RecipeType } from "@/interfaces/recipe";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const slug = searchParams.get('slug'); 
+  const slug = searchParams.get('slug');
 
   try {
     if (slug) {
