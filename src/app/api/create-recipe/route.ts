@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
-  const { title, slug, ingredients, instructions, notes, author, link, imageURL } = await req.json();
+  const { title, slug, ingredients, instructions, notes, author, link, imageURL, tags } = await req.json();
 
   // Basic validation
-  if (!title || !slug || !ingredients || !instructions || !author) {
+  if (!title || !slug || !ingredients || !instructions || !author || !tags) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
@@ -20,6 +20,7 @@ export async function POST(req: Request) {
         author,
         link: link || null,
         imageURL: imageURL || null,
+        tags: Array.isArray(tags) ? tags : [tags],
       },
     });
 

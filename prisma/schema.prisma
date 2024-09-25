@@ -22,6 +22,7 @@ model Recipe {
   notes         String?
   author        String
   link          String?
-  imageURL      String?
-  createdAt     DateTime @default(now())
+  image         String?
+  tags          String[]
+  date          DateTime @default(now())
 }

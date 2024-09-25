@@ -1,36 +1,73 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAllPosts, getPostBySlug } from "@/lib/api";
-import { CMS_NAME } from "@/lib/constants";
-import markdownToHtml from "@/lib/markdownToHtml";
-import Alert from "@/app/_components/alert";
 import Container from "@/app/_components/container";
 import Header from "@/app/_components/header";
 import { PostBody } from "@/app/_components/post-body";
 import { PostHeader } from "@/app/_components/post-header";
+import { Recipe as RecipeType } from "@/interfaces/recipe";
 
-export default async function Post({ params }: Params) {
-  const post = getPostBySlug(params.slug);
+async function getRecipeBySlug(slug: string): Promise<RecipeType | null> {
+  const res = await fetch(`/api/recipes?slug=${slug}`);
+  if (!res.ok) return null;
+  return res.json();
+}
 
-  if (!post) {
+async function getAllRecipes(): Promise<RecipeType[]> {
+  const res = await fetch('/api/recipes');
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export default async function Recipe({ params }: Params) {
+  const recipe = await getRecipeBySlug(params.slug);
+
+  if (!recipe) {
     return notFound();
   }
 
-  const content = await markdownToHtml(post.content || "");
-
   return (
     <main>
-      <Alert preview={post.preview} />
       <Container>
         <Header />
         <article className="mb-32">
           <PostHeader
-            title={post.title}
-            coverImage={post.coverImage}
-            date={post.date}
-            author={post.author}
+            title={recipe.title}
+            image={recipe.image || '/assets/default.jpeg'}
+            date={recipe.date}
+            author={recipe.author}
           />
-          <PostBody content={content} />
+          <PostBody content={recipe.instructions} />
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4">Ingredients</h2>
+            <ul className="list-disc list-inside">
+              {recipe.ingredients.map((ingredient, index) => (
+                <li key={index}>{ingredient}</li>
+              ))}
+            </ul>
+          </div>
+          {recipe.notes && (
+            <div className="mt-8">
+              <h2 className="text-2xl font-bold mb-4">Notes</h2>
+              <p>{recipe.notes}</p>
+            </div>
+          )}
+          {recipe.link && (
+            <div className="mt-8">
+              <a href={recipe.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                Original Recipe Link
+              </a>
+            </div>
+          )}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4">Tags</h2>
+            <div className="flex flex-wrap gap-2">
+              {recipe.tags.map((tag, index) => (
+                <span key={index} className="bg-gray-200 px-2 py-1 rounded-md text-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
         </article>
       </Container>
     </main>
@@ -43,28 +80,28 @@ type Params = {
   };
 };
 
-export function generateMetadata({ params }: Params): Metadata {
-  const post = getPostBySlug(params.slug);
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const recipe = await getRecipeBySlug(params.slug);
 
-  if (!post) {
+  if (!recipe) {
     return notFound();
   }
 
-  const title = `${post.title} | Next.js Blog Example with ${CMS_NAME}`;
+  const title = `${recipe.title} | Recipe`;
 
   return {
     title,
     openGraph: {
       title,
-      images: [post.ogImage.url],
+      images: [recipe.image || '/assets/default.jpeg'],
     },
   };
 }
 
 export async function generateStaticParams() {
-  const posts = getAllPosts();
+  const recipes = await getAllRecipes();
 
-  return posts.map((post) => ({
-    slug: post.slug,
+  return recipes.map((recipe) => ({
+    slug: recipe.slug,
   }));
 }
