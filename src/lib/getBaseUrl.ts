@@ -1,12 +1,9 @@
 export function getBaseUrl() {
-    if (typeof window !== 'undefined') {
-      return '';
-    }
-    if (process.env.VERCEL_URL) {
-      return `https://${process.env.VERCEL_URL}`;
-    }
-    if (process.env.RENDER_INTERNAL_HOSTNAME) {
-      return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}`;
-    }
-    return `http://localhost:${process.env.PORT ?? 3000}`;
-  }
+  const url = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : '';
+  console.log('Base URL:', url);
+  return url;
+}

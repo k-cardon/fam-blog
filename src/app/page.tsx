@@ -7,14 +7,28 @@ import { Recipe } from "@/interfaces/recipe";
 import { getBaseUrl } from "@/lib/getBaseUrl";
 
 async function getAllRecipes(): Promise<Recipe[]> {
-  const res = await fetch(`${getBaseUrl()}/api/recipes`, { 
-    cache: 'no-store',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  if (!res.ok) {
-    throw new Error('Failed to fetch recipes');
+  const url = `${getBaseUrl()}/api/recipes`;
+  console.log('Fetching recipes from:', url);
+  
+  try {
+    const res = await fetch(url, { 
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('API response not ok:', res.status, errorText);
+      throw new Error(`API responded with status ${res.status}: ${errorText}`);
+    }
+    
+    const data = await res.json();
+    console.log('Fetched recipes:', data);
+    return data;
+  } catch (error) {
+    console.error('Error fetching recipes:', error);
+    throw error;
   }
-  return res.json();
 }
 
 export default async function Home() {
