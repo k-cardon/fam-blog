@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         notes: notes || null,
         author,
         link: link || null,
-        imageURL: imageURL || null,
+        image: imageURL || null,
         tags: Array.isArray(tags) ? tags : [tags],
       },
     });
