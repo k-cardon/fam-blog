@@ -45,7 +45,7 @@ export async function GET(req: Request) {
         link: recipe.link || '',
         image: recipe.image || '', 
         tags: recipe.tags,
-        date: recipe.date.toISOString(), // Convert Date to string
+        date: recipe.date.toISOString(), 
       }));
 
       return NextResponse.json(formattedRecipes, { status: 200 });

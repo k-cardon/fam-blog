@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { uploadImage } from '../actions/uploadImage'; 
 
-const availableTags = ['Appetizer', 'Main', 'Side', 'Dessert', 'Snack', 'Breakfast', 'Vegan', 'Vegetarian', 'Dairy free', 'Kids', 'Other'];
+const availableTags = ['Appetizer', 'Main', 'Side', 'Dessert', 'Drink', 'Snack', 'Breakfast', 'Vegan', 'Vegetarian', 'Dairy free', 'Kids', 'Other'];
 
 const CreateRecipe = () => {
   const [title, setTitle] = useState<string>('');

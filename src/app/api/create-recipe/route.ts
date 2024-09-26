@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
-  const { title, slug, ingredients, instructions, notes, author, link, imageURL, tags } = await req.json();
+  const { title, slug, ingredients, instructions, notes, author, link, image, tags } = await req.json();
 
   // Basic validation
   if (!title || !slug || !ingredients || !instructions || !author || !tags) {
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         notes: notes || null,
         author,
         link: link || null,
-        image: imageURL || null,
+        image: image || null,
         tags: Array.isArray(tags) ? tags : [tags],
       },
     });

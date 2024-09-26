@@ -9,7 +9,6 @@ import { redirect } from "next/navigation";
 
 async function getAllRecipes(): Promise<Recipe[]> {
   const url = `${getBaseUrl()}/api/recipes`;
-  console.log('Fetching recipes from:', url);
   
   try {
     const res = await fetch(url, { 
@@ -27,7 +26,6 @@ async function getAllRecipes(): Promise<Recipe[]> {
     }
     
     const data = await res.json();
-    console.log('Fetched recipes:', data);
     return data;
   } catch (error) {
     console.error('Error fetching recipes:', error);
@@ -48,6 +46,7 @@ export default async function Home() {
 
   try {
     allRecipes = await getAllRecipes();
+    allRecipes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   } catch (e) {
     console.error("Failed to fetch recipes:", e);
     error = "Failed to load recipes. Please try again later.";

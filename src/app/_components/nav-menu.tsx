@@ -15,7 +15,7 @@ function AuthButton() {
         <span className="text-gray-700">{session?.user?.name}</span>
         <button 
           onClick={() => signOut()} 
-          className="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-200"
+          className="py-2 px-4 bg-rose-500 text-white rounded-md hover:bg-rose-600 transition duration-200"
         >
           Sign out
         </button>

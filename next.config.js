@@ -4,7 +4,7 @@ const nextConfig = {
       remotePatterns: [
         {
           protocol: 'https',
-          hostname: 'fam-recipe-images.s3.amazonaws.com',
+          hostname: 'fam-recipe-images.s3.us-east-1.amazonaws.com',
         },
       ],
     },

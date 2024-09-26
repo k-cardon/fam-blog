@@ -18,18 +18,31 @@ export async function uploadImage(formData: FormData) {
   }
 
   const fileBuffer = await file.arrayBuffer();
+  const key = `uploads/${Date.now()}-${file.name}`;
 
-  const params = {
+  // Generate a pre-signed URL for PUT operation
+  const putCommand = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME,
-    Key: `uploads/${Date.now()}-${file.name}`,
-    Body: Buffer.from(fileBuffer),
+    Key: key,
     ContentType: file.type,
-  };
+  });
+  const putUrl = await getSignedUrl(s3Client, putCommand, { expiresIn: 3600 }); // 1 hour to upload
 
-  const command = new PutObjectCommand(params);
-  await s3Client.send(command);
+  // Upload the file using the pre-signed URL
+  const putResponse = await fetch(putUrl, {
+    method: 'PUT',
+    body: fileBuffer,
+    headers: {
+      'Content-Type': file.type,
+    },
+  });
 
-  const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+  if (!putResponse.ok) {
+    throw new Error('Failed to upload image');
+  }
 
-  return { url: signedUrl };
+  // Generate a public URL for the uploaded object
+  const publicUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+
+  return { url: publicUrl };
 }
