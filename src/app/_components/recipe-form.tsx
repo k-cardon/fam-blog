@@ -105,11 +105,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ existingRecipe = null }) => {
         .filter(ing => ing.amount.trim() !== '' || ing.name.trim() !== '')
         .map(ing => `${ing.amount} ${ing.name}`.trim());
   
-      const formattedInstructions = instructions
-        .split('\n')
-        .filter(line => line.trim() !== '')
-        .map((line, index) => `${index + 1}. ${line.trim()}`)
-        .join('\n');
+        const formattedInstructions = isUpdating
+        ? instructions
+        : instructions
+            .split('\n')
+            .filter(line => line.trim() !== '')
+            .map((line, index) => `${index + 1}. ${line.trim()}`)
+            .join('\n');
   
       const recipeData = {
         title,
