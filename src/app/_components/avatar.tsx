@@ -4,8 +4,8 @@ type Props = {
 
 const Avatar = ({ author }: Props) => {
   return (
-    <div className="flex items-center">
-      <div className="text-xl font-bold">{author}</div>
+    <div>
+      <div className="text-xl text-center">{author}</div>
     </div>
   );
 };

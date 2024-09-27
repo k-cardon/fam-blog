@@ -1,27 +1,14 @@
-import { CMS_NAME, HOME_OG_IMAGE_URL } from "@/lib/constants";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import { Nunito } from 'next/font/google';
 import { getServerSession } from "next-auth";
-
 import SessionProvider from "@/app/_components/session-provider";
 import NavMenu from "@/app/_components/nav-menu";
-
-const inter = Inter({ subsets: ["latin"] });
+import { nunito } from '@/lib/fonts';
 
 export const metadata: Metadata = {
   title: `Nodrac's`,
   description: `Cardon family recipe blog`,
-  openGraph: {
-    images: [HOME_OG_IMAGE_URL],
-  },
-};
-
-const nunito = Nunito({
-  subsets: ['latin'],
-  display: 'swap',
-})
+  }
 
 export default async function RootLayout({
   children,

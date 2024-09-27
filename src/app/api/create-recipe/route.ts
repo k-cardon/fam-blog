@@ -4,7 +4,6 @@ import { prisma } from '@/lib/prisma';
 export async function POST(req: Request) {
   const { title, slug, ingredients, instructions, notes, author, link, image, tags } = await req.json();
 
-  // Basic validation
   if (!title || !slug || !ingredients || !instructions || !author || !tags) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
