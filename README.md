@@ -1,5 +1,7 @@
 # A custom recipe blog built with Next.js, TypeScript, Prisma, PostgreSQL, and NextAuth
 
 
-https://github.com/user-attachments/assets/99c29835-1928-495f-8738-bf258094341c
+
+https://github.com/user-attachments/assets/eb86e38d-dd2b-4689-a2ee-d56288f80c9c
+
 
