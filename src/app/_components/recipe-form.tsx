@@ -98,7 +98,12 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ existingRecipe = null }) => {
         const formData = new FormData();
         formData.append('file', imageFile);
         const result = await uploadImage(formData);
-        uploadedImageURL = result.url;
+        try {
+          const result = await uploadImage(formData);
+          uploadedImageURL = result?.url || '';
+        } catch (error) {
+          console.error('Image upload error:', error);
+        }
       }
   
       const formattedIngredients = ingredients
