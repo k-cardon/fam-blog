@@ -21,12 +21,14 @@ export default async function RootLayout({
   return (
     <html lang="en" className={nunito.className}>
       <head>
+      <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
+      <link rel="shortcut icon" href="/favicon/favicon.ico" />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
           href="/favicon/apple-touch-icon.png"
         />
-        <link
+        {/* <link
           rel="icon"
           type="image/png"
           sizes="32x32"
@@ -44,7 +46,7 @@ export default async function RootLayout({
           href="/favicon/safari-pinned-tab.svg"
           color="#000000"
         />
-        <link rel="shortcut icon" href="/favicon/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon/favicon.ico" /> */}
         <meta name="msapplication-TileColor" content="#000000" />
         <meta
           name="msapplication-config"
